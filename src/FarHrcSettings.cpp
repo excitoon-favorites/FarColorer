@@ -1,11 +1,12 @@
+#include <xercesc/parsers/XercesDOMParser.hpp>
 #include "FarHrcSettings.h"
 #include "SettingsControl.h"
-#include <xml/XmlParserErrorHandler.h>
-#include <colorer/ParserFactoryException.h>
+#include <colorer/xml/XmlParserErrorHandler.h>
+#include <colorer/parsers/ParserFactoryException.h>
 
 void FarHrcSettings::readProfile()
 {
-  StringBuffer* path = new StringBuffer(PluginPath);
+  SString* path = new SString(PluginPath);
   path->append(DString(FarProfileXml));
   readXML(path, false);
 
@@ -15,14 +16,13 @@ void FarHrcSettings::readProfile()
 void FarHrcSettings::readXML(String* file, bool userValue)
 {
   xercesc::XercesDOMParser xml_parser;
-  XmlParserErrorHandler error_handler(nullptr);
+  XmlParserErrorHandler error_handler;
   xml_parser.setErrorHandler(&error_handler);
   xml_parser.setLoadExternalDTD(false);
   xml_parser.setSkipDTDValidation(true);
-  XmlInputSource* config = XmlInputSource::newInstance(file->getWChars(), static_cast<XMLCh*>(nullptr));
+  uXmlInputSource config = XmlInputSource::newInstance(file->getWChars(), static_cast<XMLCh*>(nullptr));
   xml_parser.parse(*config->getInputSource());
   if (error_handler.getSawErrors()) {
-    delete config;
     throw ParserFactoryException(DString("Error reading hrcsettings.xml."));
   }
   xercesc::DOMDocument* catalog = xml_parser.getDocument();
@@ -32,7 +32,6 @@ void FarHrcSettings::readXML(String* file, bool userValue)
   const XMLCh* tagHrcSettings = L"hrc-settings";
 
   if (elem == nullptr || !xercesc::XMLString::equals(elem->getNodeName(), tagHrcSettings)) {
-    delete config;
     throw FarHrcSettingsException(DString("main '<hrc-settings>' block not found"));
   }
   for (xercesc::DOMNode* node = elem->getFirstChild(); node != nullptr; node = node->getNextSibling()) {
@@ -43,7 +42,6 @@ void FarHrcSettings::readXML(String* file, bool userValue)
       }
     }
   }
-  delete config;
 }
 
 void FarHrcSettings::UpdatePrototype(xercesc::DOMElement* elem, bool userValue)

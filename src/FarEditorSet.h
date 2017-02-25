@@ -1,10 +1,11 @@
 #ifndef _FAREDITORSET_H_
 #define _FAREDITORSET_H_
 
-#include <colorer/handlers/FileErrorHandler.h>
+#include <colorer/common/Colorer.h>
 #include <colorer/handlers/LineRegionsSupport.h>
 #include <colorer/viewer/TextConsoleViewer.h>
-
+#include <g3log/logworker.hpp>
+#include <g3log/loglevels.hpp>
 #include "pcolorer.h"
 #include "FarEditor.h"
 #include "FarHrcSettings.h"
@@ -149,8 +150,6 @@ public:
   std::unique_ptr<SString> sTempHrdNameTm;
 
 private:
-  /** Returns current global error handler. */
-  colorer::ErrorHandler* getErrorHandler() const;
   /** add current active editor and return him. */
   FarEditor* addCurrentEditor();
   /** Returns currently active editor. */
@@ -236,9 +235,10 @@ private:
   int CurrentMenuItem;
 
   unsigned int err_status;
-  std::unique_ptr<colorer::ErrorHandler> error_handler;
 
   bool in_construct;
+  std::unique_ptr<g3::LogWorker> log_worker;
+  std::unique_ptr<Colorer> colorer_lib;
 };
 
 #endif

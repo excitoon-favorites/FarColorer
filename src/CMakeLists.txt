@@ -21,9 +21,11 @@ ENDIF()
 #====================================================
 # colorer_lib
 #====================================================
-add_subdirectory(../libs/colorer/src/ ./build)
-include_directories(../libs/colorer/src/)
+add_subdirectory(../libs/colorer ./build)
+include_directories(../libs/colorer/src)
 include_directories (../libs/colorer/libs/xercesc/src)
+include_directories(../libs/colorer/libs/g3log/src)
+add_definitions(-DNOGDI)
 set(CMAKE_CXX_FLAGS "-DXERCES_STATIC_LIBRARY")
 #====================================================
 # far sdk
@@ -127,11 +129,11 @@ set(CMAKE_C_FLAGS_DEBUG "${FLAGS_DEBUG}")
 # build
 #====================================================
 
-set(LIBRARIES colorer_lib xerces-c_3_1)
+set(LIBRARIES colorer_lib xerces-c_3_1 g3logger)
 set(SRC_FILES ${SRC_CPP} ${SRC_DEF})
-add_library(colorer SHARED ${SRC_FILES} )
-target_link_libraries(colorer ${LIBRARIES} ${WININETLIB})
-set_target_properties(colorer
+add_library(FarColorer SHARED ${SRC_FILES} )
+target_link_libraries(FarColorer ${LIBRARIES} ${WININETLIB})
+set_target_properties(FarColorer
   PROPERTIES
   LINK_FLAGS "${LINK_FLAGS}"
   LINK_FLAGS_RELEASE "${LINK_FLAGS_RELEASE}"

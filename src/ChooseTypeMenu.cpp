@@ -1,4 +1,4 @@
-#include <colorer/parsers/helpers/FileTypeImpl.h>
+#include <colorer/parsers/FileTypeImpl.h>
 #include "FarEditor.h"
 #include "ChooseTypeMenu.h"
 
@@ -8,7 +8,7 @@ ChooseTypeMenu::ChooseTypeMenu(const wchar_t* AutoDetect, const wchar_t* Favorit
   Item = nullptr;
   ItemSelected = 0;
 
-  StringBuffer s;
+  SString s;
   s.append(DString("&A ")).append(DString(AutoDetect));
   AddItem(s.getWChars(), 0, nullptr, 0);
   AddItem(Favorites, MIF_SEPARATOR, nullptr, 1);
@@ -79,7 +79,7 @@ size_t ChooseTypeMenu::AddGroup(const wchar_t* Text)
 
 size_t ChooseTypeMenu::AddItem(const FileType* fType, size_t PosAdd)
 {
-  StringBuffer* s = GenerateName(fType);
+  SString* s = GenerateName(fType);
   size_t k = AddItem(s->getWChars(), 0, fType, PosAdd);
   delete s;
   return k;
@@ -193,16 +193,16 @@ void ChooseTypeMenu::RefreshItemCaption(size_t index)
     free((void*) Item[index].Text);
   }
 
-  StringBuffer* s = GenerateName(GetFileType(index));
+  SString* s = GenerateName(GetFileType(index));
   Item[index].Text = _wcsdup(s->getWChars());
   delete s;
 }
 
-StringBuffer* ChooseTypeMenu::GenerateName(const FileType* fType)
+SString* ChooseTypeMenu::GenerateName(const FileType* fType)
 {
   const String* v;
   v = ((FileTypeImpl*)fType)->getParamValue(DHotkey);
-  StringBuffer* s = new StringBuffer;
+  SString* s = new SString;
   if (v != nullptr && v->length()) {
     s->append(DString("&")).append(v);
   } else {

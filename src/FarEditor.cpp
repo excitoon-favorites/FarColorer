@@ -1,4 +1,3 @@
-#include <common/Logging.h>
 #include "FarEditor.h"
 
 FarEditor::FarEditor(PluginStartupInfo* info_, ParserFactory* pf) :
@@ -375,7 +374,7 @@ void FarEditor::getNameCurrentScheme()
   egs.StringNumber = ei.CurLine;
   info->EditorControl(editor_id, ECTL_GETSTRING, 0, &egs);
   if (cursorRegion != nullptr) {
-    StringBuffer region, scheme;
+    SString region, scheme;
     region.append(DString(L"Region: "));
     scheme.append(DString(L"Scheme: "));
     if (cursorRegion->region != nullptr) {
@@ -432,7 +431,7 @@ void FarEditor::locateFunction()
     }
 
     SString funcname(curLine, sword + 1, eword - sword - 1);
-    CLR_INFO("FC", "Letter %s", funcname.getChars());
+    LOGF(TRACE, "[FC] Letter %s", funcname.getChars());
     baseEditor->validate(-1, false);
     EditorSetPosition esp;
     esp.StructSize = sizeof(EditorSetPosition);
@@ -1247,9 +1246,8 @@ void FarEditor::addFARColor(intptr_t lno, intptr_t s, intptr_t e, const FarColor
   ec.Owner = MainGuid;
   ec.Priority = 0;
   ec.Color = col;
-  CLR_TRACE("FarEditor", "line:%d, %d-%d, color bg:%d fg:%d flag:%d", lno, s, e, col.BackgroundColor, col.ForegroundColor, col.Flags);
+  LOGF(TRACE, "[FarEditor] line:%d, %d-%d, color bg:%d fg:%d flag:%d", lno, s, e, col.BackgroundColor, col.ForegroundColor, col.Flags);
   info->EditorControl(editor_id, ECTL_ADDCOLOR, 0, &ec);
-  CLR_TRACE("FarEditor", "line %d: %d-%d: color bg:%d fg:%d flag:%d", lno, s, e, col.BackgroundColor, col.ForegroundColor, col.Flags);
 }
 
 const wchar_t* FarEditor::GetMsg(int msg) const

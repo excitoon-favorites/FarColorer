@@ -7,7 +7,7 @@ FarEditorSet* editorSet = nullptr;
 bool inCreateEditorSet = false;
 PluginStartupInfo Info;
 FarStandardFunctions FSF;
-StringBuffer* PluginPath;
+SString* PluginPath;
 
 extern "C" BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 {
@@ -21,7 +21,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpRes
       DString module(path, 0);
       int pos = module.lastIndexOf('\\');
       pos = module.lastIndexOf('\\', pos);
-      PluginPath = new StringBuffer(DString(module, 0, pos));
+      PluginPath = new SString(DString(module, 0, pos));
     }
     break;
 
