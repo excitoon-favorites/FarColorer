@@ -16,13 +16,13 @@ FarEditorSet::FarEditorSet():
   sLogPath(nullptr), sCatalogPathExp(nullptr), sUserHrdPathExp(nullptr), sUserHrcPathExp(nullptr), sLogPathExp(nullptr), 
   CurrentMenuItem(0), err_status(ERR_NO_ERROR)
 {
-    log_worker = std::move(g3::LogWorker::createLogWorker());
-    auto handle = log_worker->addSink(std2::make_unique<LogFileSink>("farcolorer", ".", false, false), &LogFileSink::fileWrite);
-    g3::only_change_at_initialization::setLogLevel("INFO");
-    g3::initializeLogging(log_worker.get());
-  
+  log_worker = std::move(g3::LogWorker::createLogWorker());
+  auto handle = log_worker->addSink(std2::make_unique<LogFileSink>("farcolorer", ".", false, false), &LogFileSink::fileWrite);
+  g3::only_change_at_initialization::setLogLevel("INFO");
+  g3::initializeLogging(log_worker.get());
 
-    colorer_lib = Colorer::createColorer(log_worker.get());
+
+  colorer_lib = Colorer::createColorer(log_worker.get());
 
   in_construct = true;
   ReloadBase();
@@ -32,6 +32,8 @@ FarEditorSet::FarEditorSet():
 FarEditorSet::~FarEditorSet()
 {
   dropAllEditors(false);
+  regionMapper.reset();
+  parserFactory.reset();
   colorer_lib.reset();
 }
 
