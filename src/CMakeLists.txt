@@ -137,6 +137,7 @@ add_library(FarColorer SHARED ${SRC_FILES} )
 target_link_libraries(FarColorer ${LIBRARIES} ${WININETLIB})
 set_target_properties(FarColorer
   PROPERTIES
+  OUTPUT_NAME "colorer"
   LINK_FLAGS "${LINK_FLAGS}"
   LINK_FLAGS_RELEASE "${LINK_FLAGS_RELEASE}"
 )
