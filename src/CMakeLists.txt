@@ -21,6 +21,8 @@ ENDIF()
 #====================================================
 # colorer_lib
 #====================================================
+set(COLORER_INTERNAL_BUILD ON CACHE BOOL "call colorer`s CMakeLists.txt")
+set(COLORER_TOOLS_BUILD OFF CACHE BOOL "build colorer tool")
 add_subdirectory(../libs/colorer ./build)
 include_directories(../libs/colorer/src)
 include_directories (../libs/colorer/libs/xercesc/src)
