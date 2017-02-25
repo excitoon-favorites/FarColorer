@@ -43,10 +43,10 @@ const wchar_t cUserHrdPathDefault[] = L"";
 const wchar_t cUserHrcPathDefault[] = L"";
 const wchar_t cLogPathDefault[] = L"";
 
-const DString DConsole   = DString("console");
-const DString DRgb       = DString("rgb");
-const DString Ddefault   = DString("<default>");
-const DString DAutodetect = DString("autodetect");
+const CString DConsole   = CString("console");
+const CString DRgb       = CString("rgb");
+const CString Ddefault   = CString("<default>");
+const CString DAutodetect = CString("autodetect");
 
 enum {
   IDX_BOX, IDX_ENABLED, IDX_CROSS, IDX_CROSS_TEXT, IDX_CROSS_STYLE, IDX_PAIRS, IDX_SYNTAX, IDX_OLDOUTLINE, IDX_CHANGE_BG,
@@ -95,9 +95,9 @@ public:
   int  editorInput(const INPUT_RECORD &Rec);
 
   /** Get the description of HRD, or parameter name if description=null */
-  const String* getHRDescription(const String &name, const DString &_hrdClass) const;
+  const String* getHRDescription(const String &name, const CString &_hrdClass) const;
   /** Shows dialog with HRD scheme selection */
-  const SString chooseHRDName(const String* current, const DString &_hrdClass);
+  const SString chooseHRDName(const String* current, const CString &_hrdClass);
 
   /** Reads all registry settings into variables */
   void ReadSettings();
@@ -191,9 +191,9 @@ private:
   //set list of values to combobox
   void setCrossValueListToCombobox(FileTypeImpl* type, HANDLE hDlg);
   void setCrossPosValueListToCombobox(FileTypeImpl* type, HANDLE hDlg);
-  void setYNListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, DString param);
-  void setTFListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, DString param);
-  void setCustomListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, DString param);
+  void setYNListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, CString param);
+  void setTFListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, CString param);
+  void setCustomListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, CString param);
 
   FileTypeImpl* getCurrentTypeInDialog(HANDLE hDlg) const;
 
@@ -207,8 +207,8 @@ private:
   HRCParser* hrcParser;
 
   /**current value*/
-  DString hrdClass;
-  DString hrdName;
+  CString hrdClass;
+  CString hrdName;
 
   /** registry settings */
   bool rEnabled; // status plugin

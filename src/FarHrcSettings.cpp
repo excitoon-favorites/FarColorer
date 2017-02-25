@@ -7,7 +7,7 @@
 void FarHrcSettings::readProfile()
 {
   SString* path = new SString(PluginPath);
-  path->append(DString(FarProfileXml));
+  path->append(CString(FarProfileXml));
   readXML(path, false);
 
   delete path;
@@ -23,7 +23,7 @@ void FarHrcSettings::readXML(String* file, bool userValue)
   uXmlInputSource config = XmlInputSource::newInstance(file->getWChars(), static_cast<XMLCh*>(nullptr));
   xml_parser.parse(*config->getInputSource());
   if (error_handler.getSawErrors()) {
-    throw ParserFactoryException(DString("Error reading hrcsettings.xml."));
+    throw ParserFactoryException(CString("Error reading hrcsettings.xml."));
   }
   xercesc::DOMDocument* catalog = xml_parser.getDocument();
   xercesc::DOMElement* elem = catalog->getDocumentElement();
@@ -32,7 +32,7 @@ void FarHrcSettings::readXML(String* file, bool userValue)
   const XMLCh* tagHrcSettings = L"hrc-settings";
 
   if (elem == nullptr || !xercesc::XMLString::equals(elem->getNodeName(), tagHrcSettings)) {
-    throw FarHrcSettingsException(DString("main '<hrc-settings>' block not found"));
+    throw FarHrcSettingsException(CString("main '<hrc-settings>' block not found"));
   }
   for (xercesc::DOMNode* node = elem->getFirstChild(); node != nullptr; node = node->getNextSibling()) {
     if (node->getNodeType() == xercesc::DOMNode::ELEMENT_NODE) {
@@ -56,7 +56,7 @@ void FarHrcSettings::UpdatePrototype(xercesc::DOMElement* elem, bool userValue)
     return;
   }
   HRCParser* hrcParser = parserFactory->getHRCParser();
-  DString typenamed = DString(typeName);
+  CString typenamed = CString(typeName);
   FileTypeImpl* type = static_cast<FileTypeImpl*>(hrcParser->getFileType(&typenamed));
   if (type == nullptr) {
     return;
@@ -74,17 +74,17 @@ void FarHrcSettings::UpdatePrototype(xercesc::DOMElement* elem, bool userValue)
           continue;
         }
 
-        if (type->getParamValue(DString(name)) == nullptr) {
-          type->addParam(&DString(name));
+        if (type->getParamValue(CString(name)) == nullptr) {
+          type->addParam(&CString(name));
         }
         if (descr != nullptr) {
-          type->setParamDescription(DString(name), &DString(descr));
+          type->setParamDescription(CString(name), &CString(descr));
         }
         if (userValue) {
-          type->setParamValue(DString(name), &DString(value));
+          type->setParamValue(CString(name), &CString(value));
         } else {
-          delete type->getParamDefaultValue(DString(name));
-          type->setParamDefaultValue(DString(name), &DString(value));
+          delete type->getParamDefaultValue(CString(name));
+          type->setParamDefaultValue(CString(name), &CString(value));
         }
       }
     }
@@ -110,7 +110,7 @@ void FarHrcSettings::readProfileFromRegistry()
     for (size_t i = 0; i < fse.Count; i++) {
       if (fse.Items[i].Type == FST_SUBKEY) {
         //check whether we have such a scheme
-        DString named = DString(fse.Items[i].Name);
+        CString named = CString(fse.Items[i].Name);
         FileTypeImpl* type = static_cast<FileTypeImpl*>(hrcParser->getFileType(&named));
         if (type) {
           // enum all params in the section
@@ -121,14 +121,14 @@ void FarHrcSettings::readProfileFromRegistry()
           if (ColorerSettings.rEnum(type_subkey, &type_fse)) {
             for (size_t j = 0; j < type_fse.Count; j++) {
               if (type_fse.Items[j].Type == FST_STRING) {
-                DString name_fse= DString(type_fse.Items[j].Name);
+                CString name_fse= CString(type_fse.Items[j].Name);
                 if (type->getParamValue(name_fse) == nullptr) {
                   type->addParam(&name_fse);
                 }
                 const wchar_t* p = ColorerSettings.Get(type_subkey, type_fse.Items[j].Name, static_cast<wchar_t*>(nullptr));
                 if (p) {
-                  DString dp = DString(p);
-                  type->setParamValue(DString(type_fse.Items[j].Name), &dp);
+                  CString dp = CString(p);
+                  type->setParamValue(CString(type_fse.Items[j].Name), &dp);
                 }
               }
             }

@@ -70,7 +70,7 @@ void FarEditorSet::openMenu(int MenuId)
     try {
       FarEditor* editor = getCurrentEditor();
       if (!editor && (rEnabled || MenuId != 12)) {
-        throw Exception(DString("Can't find current editor in array."));
+        throw Exception(CString("Can't find current editor in array."));
       }
 
       switch (MenuId) {
@@ -114,7 +114,7 @@ void FarEditorSet::openMenu(int MenuId)
     } catch (Exception &e) {
       LOG(ERROR) << e.what();
       SString msg("openMenu: ");
-      msg.append(DString(e.what()));
+      msg.append(CString(e.what()));
       showExceptionMessage(msg.getWChars());
       disableColorer();
     }
@@ -126,7 +126,7 @@ void FarEditorSet::viewFile(const String &path)
 {
   try {
     if (!rEnabled) {
-      throw Exception(DString("FarColorer is disabled"));
+      throw Exception(CString("FarColorer is disabled"));
     }
 
     // Creates store of text lines
@@ -147,7 +147,7 @@ void FarEditorSet::viewFile(const String &path)
     baseEditor.lineCountEvent((int)textLinesStore.getLineCount());
     // computing background color
     int background = 0x1F;
-    const StyledRegion* rd = StyledRegion::cast(regionMap->getRegionDefine(DString("def:Text")));
+    const StyledRegion* rd = StyledRegion::cast(regionMap->getRegionDefine(CString("def:Text")));
 
     if (rd != nullptr && rd->bfore && rd->bback) {
       background = rd->fore + (rd->back << 4);
@@ -158,7 +158,7 @@ void FarEditorSet::viewFile(const String &path)
     viewer.view();
     delete regionMap;
   } catch (Exception &e) {
-    showExceptionMessage(DString(e.what()).getWChars());
+    showExceptionMessage(CString(e.what()).getWChars());
   }
 }
 
@@ -330,7 +330,7 @@ void FarEditorSet::chooseType()
           if (menu.GetFileType(i)->getParamValue(DHotkey) == nullptr) {
             static_cast<FileTypeImpl*>(menu.GetFileType(i))->addParam(&DHotkey);
           }
-          DString hotkey = DString(KeyAssignDlgData[2].Data);
+          CString hotkey = CString(KeyAssignDlgData[2].Data);
           menu.GetFileType(i)->setParamValue(DHotkey, &hotkey);
           menu.RefreshItemCaption(i);
         }
@@ -355,7 +355,7 @@ void FarEditorSet::chooseType()
   p.writeUserProfile();
 }
 
-const String* FarEditorSet::getHRDescription(const String &name, const DString &_hrdClass) const
+const String* FarEditorSet::getHRDescription(const String &name, const CString &_hrdClass) const
 {
   const String* descr = nullptr;
   if (parserFactory != nullptr) {
@@ -417,7 +417,7 @@ INT_PTR WINAPI SettingDialogProc(HANDLE hDlg, intptr_t Msg, intptr_t Param1, voi
           bool trumod = !!Info.SendDlgMessage(hDlg, DM_GETCHECK, IDX_TRUEMOD, nullptr);
           int k = static_cast<int>(Info.SendDlgMessage(hDlg, DM_GETCHECK, IDX_ENABLED, nullptr));
 
-          if (fes->GetCatalogPath()->compareTo(DString(temp)) || fes->GetUserHrdPath()->compareTo(DString(userhrd))
+          if (fes->GetCatalogPath()->compareTo(CString(temp)) || fes->GetUserHrdPath()->compareTo(CString(userhrd))
               || (!fes->GetPluginStatus() && k) || (trumod == true)) {
             if (fes->TestLoadBase(temp, userhrd, userhrc, false, trumod ? FarEditorSet::HRCM_BOTH : FarEditorSet::HRCM_CONSOLE)) {
               return false;
@@ -539,9 +539,9 @@ void FarEditorSet::configure(bool fromEditor)
       //check whether or not to reload the base
       int k = false;
 
-      if (sCatalogPath->compareTo(DString(fdi[IDX_CATALOG_EDIT].Data)) ||
-          sUserHrdPath->compareTo(DString(fdi[IDX_USERHRD_EDIT].Data)) ||
-          sUserHrcPath->compareTo(DString(fdi[IDX_USERHRC_EDIT].Data)) ||
+      if (sCatalogPath->compareTo(CString(fdi[IDX_CATALOG_EDIT].Data)) ||
+          sUserHrdPath->compareTo(CString(fdi[IDX_USERHRD_EDIT].Data)) ||
+          sUserHrcPath->compareTo(CString(fdi[IDX_USERHRC_EDIT].Data)) ||
           sHrdName->compareTo(*sTempHrdName) ||
           sHrdNameTm->compareTo(*sTempHrdNameTm)) {
         k = true;
@@ -557,9 +557,9 @@ void FarEditorSet::configure(bool fromEditor)
       fdi[IDX_TRUEMOD].Selected = !!Info.SendDlgMessage(hDlg, DM_GETCHECK, IDX_TRUEMOD, nullptr);
       sHrdName = std::move(sTempHrdName);
       sHrdNameTm = std::move(sTempHrdNameTm);
-      sCatalogPath.reset(new SString(DString(fdi[IDX_CATALOG_EDIT].Data)));
-      sUserHrdPath.reset(new SString(DString(fdi[IDX_USERHRD_EDIT].Data)));
-      sUserHrcPath.reset(new SString(DString(fdi[IDX_USERHRC_EDIT].Data)));
+      sCatalogPath.reset(new SString(CString(fdi[IDX_CATALOG_EDIT].Data)));
+      sUserHrdPath.reset(new SString(CString(fdi[IDX_USERHRD_EDIT].Data)));
+      sUserHrcPath.reset(new SString(CString(fdi[IDX_USERHRC_EDIT].Data)));
       setLogPath(fdi[IDX_LOG_EDIT].Data);
 
       // if the plugin has been enable, and we will disable
@@ -595,13 +595,13 @@ void FarEditorSet::configure(bool fromEditor)
     LOG(ERROR) << e.what();
 
     SString msg("configure: ");
-    msg.append(DString(e.what()));
+    msg.append(CString(e.what()));
     showExceptionMessage(msg.getWChars());
     disableColorer();
   }
 }
 
-const SString FarEditorSet::chooseHRDName(const String* current, const DString &_hrdClass)
+const SString FarEditorSet::chooseHRDName(const String* current, const CString &_hrdClass)
 {
   if (parserFactory == nullptr) {
     return current;
@@ -615,7 +615,7 @@ const SString FarEditorSet::chooseHRDName(const String* current, const DString &
   for (int i = 0; i < count; i++) {
     const HRDNode* hrd_node = hrd_instances.at(i);
 
-    if (hrd_node->hrd_description != nullptr) {
+    if (hrd_node->hrd_description.length() != 0) {
       menuElements[i].Text = hrd_node->hrd_description.getWChars();
     }else{
       menuElements[i].Text = hrd_node->hrd_name.getWChars();
@@ -704,7 +704,7 @@ int FarEditorSet::editorEvent(const struct ProcessEditorEventInfo* pInfo)
     LOG(ERROR) << e.what();
 
     SString msg("editorEvent: ");
-    msg.append(DString(e.what()));
+    msg.append(CString(e.what()));
     showExceptionMessage(msg.getWChars());
     disableColorer();
   }
@@ -729,7 +729,7 @@ bool FarEditorSet::TestLoadBase(const wchar_t* catalogPath, const wchar_t* userH
   std::unique_ptr<SString> tpath;
   if (!catalogPathS || !catalogPathS->length()) {
     SString* path = new SString(PluginPath);
-    path->append(DString(FarCatalogXml));
+    path->append(CString(FarCatalogXml));
     tpath.reset(path);
   } else {
     tpath = std::move(catalogPathS);
@@ -776,7 +776,7 @@ bool FarEditorSet::TestLoadBase(const wchar_t* catalogPath, const wchar_t* userH
 
         if (type->getGroup() != nullptr) {
           tname.append(type->getGroup());
-          tname.append(DString(": "));
+          tname.append(CString(": "));
         }
 
         tname.append(type->getDescription());
@@ -790,7 +790,7 @@ bool FarEditorSet::TestLoadBase(const wchar_t* catalogPath, const wchar_t* userH
   } catch (Exception &e) {
     LOG(ERROR) << e.what();
 
-    showExceptionMessage(DString(e.what()).getWChars());
+    showExceptionMessage(CString(e.what()).getWChars());
     Info.RestoreScreen(scr);
     res = false;
   }
@@ -851,13 +851,13 @@ void FarEditorSet::ReloadBase()
   } catch (SettingsControlException &e) {
 
     LOG(ERROR) << e.what();
-    showExceptionMessage(DString(e.what()).getWChars());
+    showExceptionMessage(CString(e.what()).getWChars());
     err_status = ERR_FARSETTINGS_ERROR;
     disableColorer();
   } catch (Exception &e) {
 
     LOG(ERROR) << e.what();
-    showExceptionMessage(DString(e.what()).getWChars());
+    showExceptionMessage(CString(e.what()).getWChars());
     err_status = ERR_BASE_LOAD;
     disableColorer();
   }
@@ -899,7 +899,7 @@ String* FarEditorSet::getCurrentFileName()
     Info.EditorControl(CurrentEditor, ECTL_GETFILENAME, FileNameSize, FileName);
   }
 
-  DString fnpath(FileName);
+  CString fnpath(FileName);
   int slash_idx = fnpath.lastIndexOf('\\');
 
   if (slash_idx == -1) {
@@ -996,18 +996,18 @@ void FarEditorSet::ReadSettings()
   const wchar_t* userHrcPath = ColorerSettings.Get(0, cRegUserHrcPath, cUserHrcPathDefault);
   const wchar_t* LogPath = ColorerSettings.Get(0, cRegLogPath, cLogPathDefault);
 
-  sHrdName.reset(new SString(DString(hrdName)));
-  sHrdNameTm.reset(new SString(DString(hrdNameTm)));
-  sCatalogPath.reset(new SString(DString(catalogPath)));
+  sHrdName.reset(new SString(CString(hrdName)));
+  sHrdNameTm.reset(new SString(CString(hrdNameTm)));
+  sCatalogPath.reset(new SString(CString(catalogPath)));
   sCatalogPathExp.reset(PathToFullS(catalogPath, false));
   if (!sCatalogPathExp || !sCatalogPathExp->length()) {
     SString* path = new SString(PluginPath);
-    path->append(DString(FarCatalogXml));
+    path->append(CString(FarCatalogXml));
     sCatalogPathExp.reset(path);
   }
-  sUserHrdPath.reset(new SString(DString(userHrdPath)));
+  sUserHrdPath.reset(new SString(CString(userHrdPath)));
   sUserHrdPathExp.reset(PathToFullS(userHrdPath, false));
-  sUserHrcPath.reset(new SString(DString(userHrcPath)));
+  sUserHrcPath.reset(new SString(CString(userHrcPath)));
   sUserHrcPathExp.reset(PathToFullS(userHrcPath, false));
   setLogPath(LogPath);
 
@@ -1023,10 +1023,10 @@ void FarEditorSet::ReadSettings()
 
 void FarEditorSet::setLogPath(const wchar_t* log_path)
 {
-/*  if (sLogPath && sLogPath->compareToIgnoreCase(DString(log_path)) != 0) {
+/*  if (sLogPath && sLogPath->compareToIgnoreCase(CString(log_path)) != 0) {
     error_handler.release();
   }
-  sLogPath.reset(new SString(DString(log_path)));
+  sLogPath.reset(new SString(CString(log_path)));
   sLogPathExp.reset(PathToFullS(log_path, false));
   if (error_handler == nullptr && sLogPathExp != nullptr) {
     try {
@@ -1061,7 +1061,7 @@ bool FarEditorSet::SetBgEditor() const
 {
   if (rEnabled && ChangeBgEditor) {
 
-    const StyledRegion* def_text = StyledRegion::cast(regionMapper->getRegionDefine(DString("def:Text")));
+    const StyledRegion* def_text = StyledRegion::cast(regionMapper->getRegionDefine(CString("def:Text")));
 
     FarSetColors fsc;
     FarColor fc;
@@ -1096,14 +1096,14 @@ void FarEditorSet::LoadUserHrd(const String* filename, ParserFactory* pf)
     uXmlInputSource config = XmlInputSource::newInstance(filename->getWChars(), static_cast<XMLCh*>(nullptr));
     xml_parser.parse(*config->getInputSource());
     if (err_handler.getSawErrors()) {
-      throw ParserFactoryException(SString("Error reading ") + DString(filename));
+      throw ParserFactoryException(SString("Error reading ") + CString(filename));
     }
     xercesc::DOMDocument* catalog = xml_parser.getDocument();
     xercesc::DOMElement* elem = catalog->getDocumentElement();
     const XMLCh* tagHrdSets = L"hrd-sets";
     const XMLCh* tagHrd = L"hrd";
     if (elem == nullptr || !xercesc::XMLString::equals(elem->getNodeName(), tagHrdSets)) {
-      throw Exception(DString("main '<hrd-sets>' block not found"));
+      throw Exception(CString("main '<hrd-sets>' block not found"));
     }
     for (xercesc::DOMNode* node = elem->getFirstChild(); node != nullptr; node = node->getNextSibling()) {
       if (node->getNodeType() == xercesc::DOMNode::ELEMENT_NODE) {
@@ -1137,8 +1137,8 @@ const String* FarEditorSet::getParamDefValue(FileTypeImpl* type, SString param) 
     value = defaultType->getParamValue(param);
   }
   SString* p = new SString("<default-");
-  p->append(DString(value));
-  p->append(DString(">"));
+  p->append(CString(value));
+  p->append(CString(">"));
   return p;
 }
 
@@ -1306,7 +1306,7 @@ void FarEditorSet::setCrossPosValueListToCombobox(FileTypeImpl* type, HANDLE hDl
   delete lcross;
 }
 
-void FarEditorSet::setYNListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, DString param)
+void FarEditorSet::setYNListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, CString param)
 {
   const String* value = type->getParamUserValue(param);
   const String* def_value = getParamDefValue(type, param);
@@ -1340,7 +1340,7 @@ void FarEditorSet::setYNListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, DSt
   delete lcross;
 }
 
-void FarEditorSet::setTFListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, DString param)
+void FarEditorSet::setTFListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, CString param)
 {
   const String* value = type->getParamUserValue(param);
   const String* def_value = getParamDefValue(type, param);
@@ -1374,7 +1374,7 @@ void FarEditorSet::setTFListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, DSt
   delete lcross;
 }
 
-void FarEditorSet::setCustomListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, DString param)
+void FarEditorSet::setCustomListValueToCombobox(FileTypeImpl* type, HANDLE hDlg, CString param)
 {
   const String* value = type->getParamUserValue(param);
   const String* def_value = getParamDefValue(type, param);
@@ -1428,9 +1428,9 @@ void FarEditorSet::SaveChangedValueParam(HANDLE hDlg)
   Info.SendDlgMessage(hDlg, DM_LISTGETITEM, IDX_CH_PARAM_LIST, &List);
 
   //param name
-  DString p = DString(List.Item.Text);
+  CString p = CString(List.Item.Text);
   //param value
-  DString v = DString(trim(reinterpret_cast<wchar_t*>(Info.SendDlgMessage(hDlg, DM_GETCONSTTEXTPTR, IDX_CH_PARAM_VALUE_LIST, nullptr))));
+  CString v = CString(trim(reinterpret_cast<wchar_t*>(Info.SendDlgMessage(hDlg, DM_GETCONSTTEXTPTR, IDX_CH_PARAM_VALUE_LIST, nullptr))));
   FileTypeImpl* type = getCurrentTypeInDialog(hDlg);
   const String* value = static_cast<FileTypeImpl*>(type)->getParamUserValue(p);
   const String* def_value = getParamDefValue(type, p);
@@ -1463,7 +1463,7 @@ void  FarEditorSet::OnChangeParam(HANDLE hDlg, intptr_t idx)
   Info.SendDlgMessage(hDlg, DM_LISTGETITEM, IDX_CH_PARAM_LIST, &List);
 
   menuid = idx;
-  DString p = DString(List.Item.Text);
+  CString p = CString(List.Item.Text);
 
   const String* value;
   value = type->getParamDescription(p);
@@ -1483,12 +1483,12 @@ void  FarEditorSet::OnChangeParam(HANDLE hDlg, intptr_t idx)
     if (p.equals(&DCrossZorder)) {
       setCrossPosValueListToCombobox(type, hDlg);
     } else if (p.equals(&DMaxLen) || p.equals(&DBackparse) || p.equals(&DDefFore) || p.equals(&DDefBack)
-               || p.equals("firstlines") || p.equals("firstlinebytes") || p.equals(&DHotkey)) {
-      setCustomListValueToCombobox(type, hDlg, DString(List.Item.Text));
+               || p.equals(&CString("firstlines")) || p.equals(&CString("firstlinebytes")) || p.equals(&DHotkey)) {
+      setCustomListValueToCombobox(type, hDlg, CString(List.Item.Text));
     } else if (p.equals(&DFullback)) {
-      setYNListValueToCombobox(type, hDlg, DString(List.Item.Text));
+      setYNListValueToCombobox(type, hDlg, CString(List.Item.Text));
     } else {
-      setTFListValueToCombobox(type, hDlg, DString(List.Item.Text));
+      setTFListValueToCombobox(type, hDlg, CString(List.Item.Text));
     }
   }
 

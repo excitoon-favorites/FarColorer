@@ -19,7 +19,7 @@ public:
   FarHrcSettingsException() noexcept : Exception("[FarHrcSettingsException] ") {};
   FarHrcSettingsException(const String &msg) noexcept : FarHrcSettingsException()
   {
-    what_str.append(msg.getChars());
+    what_str.append(msg);
   }
 };
 

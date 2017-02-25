@@ -1,4 +1,5 @@
 #include "FarEditor.h"
+#include <colorer/unicode/Character.h>
 
 FarEditor::FarEditor(PluginStartupInfo* info_, ParserFactory* pf) :
   info(info_), parserFactory(pf), maxLineLength(0), fullBackground(true), drawCross(0), CrossStyle(0), showVerticalCross(false),
@@ -7,8 +8,8 @@ FarEditor::FarEditor(PluginStartupInfo* info_, ParserFactory* pf) :
     ret_str(nullptr), ret_strNumber(SIZE_MAX), newfore(-1), newback(-1), rdBackground(nullptr), cursorRegion(nullptr),
     visibleLevel(100), editor_id(-1)
 {
-  DString def_out = DString("def:Outlined");
-  DString def_err = DString("def:Error");
+  CString def_out = CString("def:Outlined");
+  CString def_err = CString("def:Error");
   baseEditor = new BaseEditor(parserFactory, this);
   const Region* def_Outlined = pf->getHRCParser()->getRegion(&def_out);
   const Region* def_Error = pf->getHRCParser()->getRegion(&def_err);
@@ -47,7 +48,7 @@ void FarEditor::endJob(int lno)
   ret_str = nullptr;
 }
 
-String* FarEditor::getLine(size_t lno)
+SString* FarEditor::getLine(size_t lno)
 {
   if (ret_strNumber == lno && ret_str != nullptr) {
     return ret_str;
@@ -69,7 +70,7 @@ String* FarEditor::getLine(size_t lno)
   }
 
   delete ret_str;
-  ret_str = new SString(DString(es.StringText, 0, (int)len));
+  ret_str = new SString(CString(es.StringText, 0, (int)len));
   return ret_str;
 }
 
@@ -96,7 +97,7 @@ void FarEditor::reloadTypeSettings()
   FileType* def = hrcParser->getFileType(&DDefaultScheme);
 
   if (def == nullptr) {
-    throw Exception(DString("No 'default' file type found"));
+    throw Exception(CString("No 'default' file type found"));
   }
 
   int backparse = def->getParamValueInt(DBackparse, 2000);
@@ -375,8 +376,8 @@ void FarEditor::getNameCurrentScheme()
   info->EditorControl(editor_id, ECTL_GETSTRING, 0, &egs);
   if (cursorRegion != nullptr) {
     SString region, scheme;
-    region.append(DString(L"Region: "));
-    scheme.append(DString(L"Scheme: "));
+    region.append(CString(L"Region: "));
+    scheme.append(CString(L"Scheme: "));
     if (cursorRegion->region != nullptr) {
       const Region* r = cursorRegion->region;
       region.append(r->getName());
@@ -447,7 +448,7 @@ void FarEditor::locateFunction()
     for (int idx = 0; idx < items_num; idx++) {
       OutlineItem* item = structOutliner->getItem(idx);
 
-      if (item->token->indexOfIgnoreCase(DString(funcname)) != -1) {
+      if (item->token->indexOfIgnoreCase(CString(funcname)) != -1) {
         if (item->lno == ei.CurLine) {
           item_last = item;
         } else {
@@ -579,7 +580,7 @@ int FarEditor::editorEvent(intptr_t event, void* param)
   }
 
   if (rdBackground == nullptr) {
-    throw Exception(DString("HRD Background region 'def:Text' not found"));
+    throw Exception(CString("HRD Background region 'def:Text' not found"));
   }
 
   EditorInfo ei = enterHandler();
@@ -624,7 +625,7 @@ int FarEditor::editorEvent(intptr_t event, void* param)
     egs.StringNumber = lno;
     info->EditorControl(editor_id, ECTL_GETSTRING, 0, &egs);
     int llen = (int)egs.StringLength;
-    DString s = DString(egs.StringText);
+    CString s = CString(egs.StringText);
     //position previously found a column in the current row
     ecp_cl.StructSize = sizeof(EditorConvertPos);
     ecp_cl.StringNumber = lno;
@@ -834,7 +835,7 @@ void FarEditor::showOutliner(Outliner* outliner)
     for (i = 0; i < items_num; i++) {
       OutlineItem* item = outliner->getItem(i);
 
-      if (item->token->indexOfIgnoreCase(DString(filter)) != -1) {
+      if (item->token->indexOfIgnoreCase(CString(filter)) != -1) {
         int treeLevel = Outliner::manageTree(treeStack, item->level);
 
         if (maxLevel < treeLevel) {
@@ -911,7 +912,7 @@ void FarEditor::showOutliner(Outliner* outliner)
 
     while (code != 0 && menu_size > 1 && same && plen < FILTER_SIZE) {
       plen = aflen + 1;
-      int auto_ptr  = DString(menu[0].Text).indexOfIgnoreCase(DString(autofilter));
+      int auto_ptr  = CString(menu[0].Text).indexOfIgnoreCase(CString(autofilter));
 
       if (int(wcslen(menu[0].Text) - auto_ptr) < plen) {
         break;
@@ -921,7 +922,7 @@ void FarEditor::showOutliner(Outliner* outliner)
       prefix[plen] = 0;
 
       for (int j = 1 ; j < menu_size ; j++) {
-        if (DString(menu[j].Text).indexOfIgnoreCase(DString(prefix)) == -1) {
+        if (CString(menu[j].Text).indexOfIgnoreCase(CString(prefix)) == -1) {
           same = false;
           break;
         }

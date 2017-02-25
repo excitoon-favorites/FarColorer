@@ -18,10 +18,10 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpRes
       if (!GetModuleFileName(hinstDLL, path, MAX_PATH)) {
         return false;
       }
-      DString module(path, 0);
+      CString module(path, 0);
       int pos = module.lastIndexOf('\\');
       pos = module.lastIndexOf('\\', pos);
-      PluginPath = new SString(DString(module, 0, pos));
+      PluginPath = new SString(CString(module, 0, pos));
     }
     break;
 
@@ -110,7 +110,7 @@ HANDLE WINAPI OpenW(const struct OpenInfo* oInfo)
         if (!editorSet) {
           editorSet = new FarEditorSet();
         }
-        editorSet->viewFile(DString(nfile));
+        editorSet->viewFile(CString(nfile));
       }
 
       delete[] nfile;
@@ -130,7 +130,7 @@ HANDLE WINAPI OpenW(const struct OpenInfo* oInfo)
           MenuCode = (int)mi->Values[0].Double;
           break;
         case FMVT_STRING:
-          command.reset(new SString(DString(mi->Values[0].String)));
+          command.reset(new SString(CString(mi->Values[0].String)));
           break;
         default:
           MenuCode = -1;
@@ -148,7 +148,7 @@ HANDLE WINAPI OpenW(const struct OpenInfo* oInfo)
             editorSet = new FarEditorSet();
           }
 
-          if (command->equals("status")){
+          if (command->equals(&CString("status"))){
             if (mi->Count == 1) {
               return editorSet->isEnable() ? INVALID_HANDLE_VALUE : nullptr;
             }

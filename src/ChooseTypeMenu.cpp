@@ -9,7 +9,7 @@ ChooseTypeMenu::ChooseTypeMenu(const wchar_t* AutoDetect, const wchar_t* Favorit
   ItemSelected = 0;
 
   SString s;
-  s.append(DString("&A ")).append(DString(AutoDetect));
+  s.append(CString("&A ")).append(CString(AutoDetect));
   AddItem(s.getWChars(), 0, nullptr, 0);
   AddItem(Favorites, MIF_SEPARATOR, nullptr, 1);
 }
@@ -50,7 +50,7 @@ size_t ChooseTypeMenu::AddItem(const wchar_t* Text, const MENUITEMFLAGS Flags, c
   if (!(ItemCount & 255)) {
     FarMenuItem* NewPtr = static_cast<FarMenuItem*>(realloc(Item, sizeof(FarMenuItem) * (ItemCount + 256 + 1)));
     if (!NewPtr) {
-      throw Exception(DString("ChooseTypeMenu: not enough available memory."));
+      throw Exception(CString("ChooseTypeMenu: not enough available memory."));
     }
 
     Item = NewPtr;
@@ -165,7 +165,7 @@ size_t ChooseTypeMenu::AddItemInGroup(FileType* fType)
 {
   size_t i;
   const String* group = fType->getGroup();
-  for (i = favorite_idx; i < ItemCount && !((Item[i].Flags & MIF_SEPARATOR) && (group->compareTo(DString(Item[i].Text)) == 0)); i++);
+  for (i = favorite_idx; i < ItemCount && !((Item[i].Flags & MIF_SEPARATOR) && (group->compareTo(CString(Item[i].Text)) == 0)); i++);
   if (Item[i].Flags & MIF_HIDDEN) {
     Item[i].Flags &= ~MIF_HIDDEN;
   }
@@ -204,11 +204,11 @@ SString* ChooseTypeMenu::GenerateName(const FileType* fType)
   v = ((FileTypeImpl*)fType)->getParamValue(DHotkey);
   SString* s = new SString;
   if (v != nullptr && v->length()) {
-    s->append(DString("&")).append(v);
+    s->append(CString("&")).append(v);
   } else {
-    s->append(DString(" "));
+    s->append(CString(" "));
   }
-  s->append(DString(" ")).append(((FileType*)fType)->getDescription());
+  s->append(CString(" ")).append(((FileType*)fType)->getDescription());
 
   return s;
 }
