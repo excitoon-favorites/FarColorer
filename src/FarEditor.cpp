@@ -445,7 +445,7 @@ void FarEditor::locateFunction()
     }
 
     //search through the outliner
-    for (int idx = 0; idx < items_num; idx++) {
+    for (size_t idx = 0; idx < items_num; idx++) {
       OutlineItem* item = structOutliner->getItem(idx);
 
       if (item->token->indexOfIgnoreCase(CString(funcname)) != -1) {
@@ -824,7 +824,7 @@ void FarEditor::showOutliner(Outliner* outliner)
   EditorInfo ei_curr = enterHandler();
 
   while (!stopMenu) {
-    int i;
+    size_t i;
     memset(menu, 0, sizeof(FarMenuItem)*items_num);
     // items in FAR's menu;
     int menu_size = 0;
@@ -1138,7 +1138,7 @@ void FarEditor::showOutliner(Outliner* outliner)
     }
   }
 
-  for (int i = 0; i < items_num; i++) {
+  for (size_t i = 0; i < items_num; i++) {
     delete[] menu[i].Text;
   }
 

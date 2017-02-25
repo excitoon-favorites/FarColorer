@@ -32,7 +32,7 @@ FarEditorSet::FarEditorSet():
 FarEditorSet::~FarEditorSet()
 {
   dropAllEditors(false);
-  colorer_lib.release();
+  colorer_lib.reset();
 }
 
 void FarEditorSet::openMenu(int MenuId)
@@ -612,7 +612,7 @@ const SString FarEditorSet::chooseHRDName(const String* current, const CString &
   FarMenuItem* menuElements = new FarMenuItem[count];
   memset(menuElements, 0, sizeof(FarMenuItem)*count);
 
-  for (int i = 0; i < count; i++) {
+  for (size_t i = 0; i < count; i++) {
     const HRDNode* hrd_node = hrd_instances.at(i);
 
     if (hrd_node->hrd_description.length() != 0) {
@@ -812,8 +812,8 @@ void FarEditorSet::ReloadBase()
     const wchar_t* marr[2] = { GetMsg(mName), GetMsg(mReloading) };
     Info.Message(&MainGuid, &ReloadBaseMessage, 0, nullptr, &marr[0], 2, 0);
     dropAllEditors(true);
-    regionMapper.release();
-    parserFactory.release();
+    regionMapper.reset();
+    parserFactory.reset();
 
     if (TrueModOn) {
       hrdClass = DRgb;
@@ -938,8 +938,8 @@ void FarEditorSet::disableColorer()
 
   dropCurrentEditor(true);
 
-  regionMapper.release();
-  parserFactory.release();
+  regionMapper.reset();
+  parserFactory.reset();
   SaveSettings();
 }
 
